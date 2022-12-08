@@ -18,6 +18,18 @@ defmodule Day2 do
     end
   end
 
+  defp shouldChoose(opponentPlayed, outcome) do
+    case {opponentPlayed, outcome} do
+      {:rock, :win} -> :paper
+      {:rock, :lose} -> :scissors
+      {:scissors, :lose} -> :paper
+      {:scissors, :win} -> :rock
+      {:paper, :win} -> :scissors
+      {:paper, :lose} -> :rock
+      {x, :draw} -> x
+    end
+  end
+
   defp score(result, choice) do
     game =
       case result do
@@ -36,23 +48,30 @@ defmodule Day2 do
     game + hand
   end
 
-  defp translate(letter) do
+  defp translateMove(letter) do
     case letter do
-      "X" -> :rock
       "A" -> :rock
-      "Y" -> :paper
       "B" -> :paper
-      "Z" -> :scissors
       "C" -> :scissors
+    end
+  end
+
+  defp translateStrategy(letter) do
+    case letter do
+      "Y" -> :draw
+      "X" -> :lose
+      "Z" -> :win
     end
   end
 
   defp calc(lines) do
     lines
     |> Enum.map(fn line ->
-      IO.puts(line)
-      [opponent, me] = String.split(line, " ", trim: true)
-      score(play(translate(me), translate(opponent)), translate(me))
+      [opponent, strategy] = String.split(line, " ", trim: true)
+      opponentPlayed = translateMove(opponent)
+      myChoice = shouldChoose(opponentPlayed, translateStrategy(strategy))
+
+      score(play(myChoice, opponentPlayed), myChoice)
     end)
     |> Enum.sum()
   end
