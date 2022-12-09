@@ -26,7 +26,7 @@ defmodule Day3 do
         |> Enum.split(splitAt)
 
       c1
-      |> Enum.find(nil, fn l -> c2 |> Enum.member?(l) end)
+      |> Enum.find(fn l -> c2 |> Enum.member?(l) end)
       |> priority()
     end)
     |> Enum.sum()
