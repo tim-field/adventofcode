@@ -1,7 +1,7 @@
 defmodule Day3 do
   def run(fileName) do
     case File.read(fileName) do
-      {:ok, body} -> calc(String.split(body, "\n", trim: true))
+      {:ok, body} -> part2(body)
       {:error, reason} -> reason
     end
   end
@@ -15,8 +15,8 @@ defmodule Day3 do
     end
   end
 
-  defp calc(lines) do
-    lines
+  defp part1(fileContents) do
+    String.split(fileContents, "\n", trim: true)
     |> Enum.map(fn line ->
       splitAt = round(String.length(line) / 2)
 
@@ -31,6 +31,25 @@ defmodule Day3 do
     end)
     |> Enum.sum()
   end
+
+  defp part2(fileContents) do
+    String.split(fileContents, "\n", trim: true)
+    |> Enum.map(fn line -> String.codepoints(line) end)
+    |> Enum.chunk_every(3)
+    |> Enum.flat_map(fn sack ->
+      sack
+      |> Enum.reduce(nil, fn contents, acc ->
+        if acc == nil do
+          MapSet.new(contents)
+        else
+          MapSet.intersection(MapSet.new(contents), acc)
+        end
+      end)
+    end)
+    |> Enum.map(fn letter -> priority(letter) end)
+    |> Enum.sum()
+  end
 end
 
-IO.puts(Day3.run("input.txt"))
+IO.puts(inspect(Day3.run("input.txt")))
+# IO.puts(length(Day3.run("input.txt")))
