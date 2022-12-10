@@ -14,7 +14,7 @@ defmodule Day4 do
   defp readFile(fileName) do
     case File.read(fileName) do
       {:ok, body} -> body
-      {:error, reason} -> reason
+      {:error, reason} -> raise(reason)
     end
   end
 
