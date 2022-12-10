@@ -39,10 +39,9 @@ defmodule Day3 do
     |> Enum.flat_map(fn sack ->
       sack
       |> Enum.reduce(nil, fn contents, acc ->
-        if acc == nil do
-          MapSet.new(contents)
-        else
-          MapSet.intersection(MapSet.new(contents), acc)
+        cond do
+          acc == nil -> MapSet.new(contents)
+          match?(%MapSet{}, acc) -> MapSet.intersection(MapSet.new(contents), acc)
         end
       end)
     end)
