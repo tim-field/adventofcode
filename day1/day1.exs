@@ -1,23 +1,20 @@
 defmodule Day1 do
   def run() do
     case File.read("input.txt") do
-      {:ok, body} -> sort(String.split(body, "\n"))
+      {:ok, body} -> sort(body)
       {:error, reason} -> reason
     end
   end
 
-  defp sort(lines) do
-    lines
-    |> Enum.reduce([0], fn line, list ->
-      idx = length(list) - 1
+  defp sort(fileContents) do
+    groups = String.split(fileContents, "\n\n")
 
-      if line == "" do
-        # start a new list entry
-        list ++ [0]
-      else
-        # update the count for the entry at this idx
-        List.replace_at(list, idx, Enum.at(list, idx) + String.to_integer(line))
-      end
+    groups
+    |> Enum.map(fn group ->
+      group
+      |> String.split("\n", trim: true)
+      |> Enum.map(fn line -> String.to_integer(line) end)
+      |> Enum.sum()
     end)
     |> Enum.sort()
     |> Enum.reverse()
