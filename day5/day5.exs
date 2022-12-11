@@ -15,17 +15,24 @@ defmodule Day5 do
       |> Enum.drop(1)
       |> Enum.take_every(4)
     end)
-    |> Enum.reduce([], fn line, acc ->
+    |> Enum.reduce([], fn line, all ->
       line
-      |> Enum.with_index(fn value, index ->
-        List.insert_at(acc, index, Enum.at(acc, index, []) ++ [value])
+      |> Enum.with_index()
+      |> Enum.reduce(all, fn {value, index}, acc ->
+        # IO.puts("value" <> value <> " index:" <> to_string(index) <>
+        # " val" <> inspect(val) <>
+        # " acc" <> inspect(acc))
+        case Enum.at(acc, index) do
+          nil -> List.insert_at(acc, index, [value])
+          _ -> List.replace_at(acc, index, Enum.at(acc, index) ++ [value])
+        end
       end)
     end)
   end
 
   def readFile(fileName) do
     fileName
-    |> File.stream!([:trim_bom])
+    |> File.stream!()
   end
 end
 
