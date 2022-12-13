@@ -1,5 +1,13 @@
 defmodule Day5 do
   def part1(fileName) do
+    run(fileName)
+  end
+
+  def part2(fileName) do
+    run(fileName, "9001")
+  end
+
+  defp run(fileName, model \\ "9000") do
     table =
       readFile(fileName)
       |> parseTable()
@@ -7,7 +15,7 @@ defmodule Day5 do
     readFile(fileName)
     |> parseInstructions()
     |> Enum.reduce(table, fn instruction, table ->
-      performInstruction(instruction, table)
+      performInstruction(instruction, table, model)
     end)
     |> Enum.map(&hd/1)
     |> Enum.join("")
@@ -47,10 +55,18 @@ defmodule Day5 do
     end)
   end
 
-  def performInstruction(instruction, table) do
+  def performInstruction(instruction, table, model) do
     [move, from, to] = instruction
 
-    moveValues = Enum.at(table, from) |> Enum.slice(Range.new(0, move)) |> Enum.reverse()
+    lift = fn values ->
+      if model == "9000" do
+        values |> Enum.reverse()
+      else
+        values
+      end
+    end
+
+    moveValues = Enum.at(table, from) |> Enum.slice(Range.new(0, move)) |> lift.()
 
     table
     |> List.replace_at(to, moveValues ++ Enum.at(table, to))
@@ -64,3 +80,4 @@ defmodule Day5 do
 end
 
 IO.puts(inspect(Day5.part1("input.txt")))
+IO.puts(inspect(Day5.part2("input.txt")))
